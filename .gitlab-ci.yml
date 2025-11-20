@@ -1,0 +1,44 @@
+image: node:20
+
+stages:
+  - install
+  - lint
+  - build
+  - deploy
+
+cache:
+  paths:
+    - node_modules/
+
+install:
+  stage: install
+  script:
+    - npm ci
+  artifacts:
+    paths:
+      - node_modules/
+
+lint:
+  stage: lint
+  script:
+    - npm run lint
+
+build:
+  stage: build
+  script:
+    - npm run build
+  artifacts:
+    paths:
+      - dist/
+    expire_in: 1 week
+
+pages:
+  stage: deploy
+  script:
+    - mkdir .public
+    - cp -R dist/* .public/
+  artifacts:
+    paths:
+      - .public
+  only:
+    - main
